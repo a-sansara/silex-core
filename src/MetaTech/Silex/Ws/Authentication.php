@@ -77,6 +77,7 @@ class Authentication
      */
     public function checkUser($login, $password, $key)
     {
+        // implements with userProvider on subclasse
         return true;
     }
 
