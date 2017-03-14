@@ -145,8 +145,6 @@ class Authentication
                     $user = $this->session->get('user');
                     // done : lets controller takes hand
                     if (!is_null($user) && $user->key == $token->getIdent()) {
-                        $user->wskey = $token->getValue();
-                        $this->session->set('user', $user);
                         return;
                     }
                     else {
