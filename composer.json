@@ -31,5 +31,6 @@
             "type": "git",
             "url": "https://github.com/meta-tech/silex-controller-service.git"
         }
-    ]
+    ],
+    "minimum-stability": "dev"
 }
