@@ -1,0 +1,10 @@
+env             :
+    name                : local
+    prod                : 0
+    debug               : 1
+    url                 : pwsserver.docker
+    protocol            : http
+
+info            :
+    app_name            : pwsserver
+    version             : 1.0.2

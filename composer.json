@@ -1,0 +1,35 @@
+{
+    "name"          : "meta-tech/silex-core",
+    "type"          : "library",
+    "homepage"      : "https://github.com/meta-tech/silex-core",
+    "description"   : "meta-tech silex-core package for silex2 applications",
+    "license"       : "MIT",
+    "authors"       : [
+        {
+            "name"      : "a-Sansara",
+            "homepage"  : "https://github.com/a-sansara/"
+        }
+    ],
+    "keywords"      : ["Silex", "Core", "WebService"],
+    "autoload"      : {
+        "psr-4"         : {
+            ""              : "src/"
+        }
+    },
+    "require": {
+        "meta-tech/pws-auth" : "@dev",
+        "meta-tech/silex-controller-service" : "@dev",
+        "silex/silex": "~2.0",
+        "gecko-packages/gecko-silex-config-service": "^2.0"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/meta-tech/pws-auth.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/meta-tech/silex-controller-service.git"
+        }
+    ]
+}
