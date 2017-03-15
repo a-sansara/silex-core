@@ -13,6 +13,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use MetaTech\PwsAuth\Authenticator;
 use MetaTech\PwsAuth\Token;
 
@@ -24,21 +25,25 @@ use MetaTech\PwsAuth\Token;
  */
 class Authentication
 {
-    /*! @protected @®ar Symfony\Component\HttpFoundation\Session\Session $session */ 
+    /*! @protected @var Symfony\Component\HttpFoundation\Session\Session $session */ 
     protected $session;
-    /*! @protected @®ar MetaTech\PwsAuth\Authenticator $authenticator */
+    /*! @protected @var MetaTech\PwsAuth\Authenticator $authenticator */
     protected $authenticator;
+    /*! @protected @var Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface $passEncoder */
+    protected $passEncoder;
 
     /*!
      * @constructor
      * @public
-     * @param       Symfony\Component\HttpFoundation\Session\Session    $session
-     * @param       MetaTech\PwsAuth\Authenticator                      $authenticator
+     * @param       Symfony\Component\HttpFoundation\Session\Session                    $session
+     * @param       MetaTech\PwsAuth\Authenticator                                      $authenticator
+     * @param       Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface    $passEncoder
      */
-    public function __construct(Session $session, Authenticator $authenticator)
+    public function __construct(Session $session, Authenticator $authenticator, PasswordEncoderInterface $passEncoder = null)
     {
-        $this->session = $session;
+        $this->session       = $session;
         $this->authenticator = $authenticator;
+        $this->passEncoder   = $passEncoder;
     }
 
     /*!
@@ -70,12 +75,13 @@ class Authentication
     /*!
      * @method      checkUser
      * @public
-     * @param      str      $login
-     * @param      str      $password
-     * @param      str      $key
-     * @return      bool
+     * @param      str                                                                  $login
+     * @param      str                                                                  $password
+     * @param      str                                                                  $key
+     * @param      Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface     $passEncoder
+     * @return     bool
      */
-    public function checkUser($login, $password, $key)
+    public function checkUser($login, $password, $key, PasswordEncoderInterface $passEncoder = null)
     {
         // implements on subclass
         return false;
@@ -97,7 +103,7 @@ class Authentication
             $password = $request->get('password');
             if ($this->authenticator->check($token, $login)) {
                 try {
-                    if ($done = $this->checkUser($login, $password, $token->getIdent())) {
+                    if ($done = $this->checkUser($login, $password, $token->getIdent(), $this->passEncoder)) {
                         $sid  = $this->onSuccess($token, $login);
                         $msg  = "authentication sucessful ! logged as $login";
                         $data = compact('sid');

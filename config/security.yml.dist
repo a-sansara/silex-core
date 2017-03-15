@@ -1,0 +1,12 @@
+security.firewalls  :
+    dev:
+        pattern: ^/(_(profiler|wdt)|css|images|js)/
+        security: false
+
+    main:
+        pattern: ^/ws
+        anonymous: true
+
+security.params     :
+    sleep               : 3
+

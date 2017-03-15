@@ -105,6 +105,7 @@ class UserProvider implements UserProviderInterface
         $user = $this->loadUser($username);
         $u    = new User($user->username, $user->password, explode(',', $user->roles), true, true, true, true);
         $u->labelName = $user->name;
+        $u->key = $user->key;
         return $u;
     }
 

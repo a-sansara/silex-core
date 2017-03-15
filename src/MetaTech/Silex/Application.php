@@ -12,6 +12,7 @@ namespace MetaTech\Silex;
 use Silex\Application as BaseApplication;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
 use GeckoPackages\Silex\Services\Config\ConfigServiceProvider;
 
 /*!
@@ -52,6 +53,9 @@ class Application extends BaseApplication
         ]);
         $this->register(new SessionServiceProvider());
         $this->register(new ServiceControllerServiceProvider());
+        if (!empty($this['config']['security'])) {
+            $this->register(new SecurityServiceProvider(), $this['config']['security']);
+        }
     }
 
     /*!

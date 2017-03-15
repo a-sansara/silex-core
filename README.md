@@ -8,6 +8,7 @@ Core package for silex2 applications
 * meta-tech/pws-auth
 * meta-tech/silex-controller-service
 * silex/silex (v2)
+* symfony/security (~3.2)
 * gecko-packages/gecko-silex-config-service
 
 
