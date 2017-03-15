@@ -22,15 +22,5 @@
         "silex/silex": "~2.0",
         "gecko-packages/gecko-silex-config-service": "^2.0"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/meta-tech/pws-auth.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/meta-tech/silex-controller-service.git"
-        }
-    ],
     "minimum-stability": "dev"
 }
