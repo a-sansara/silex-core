@@ -1,0 +1,7 @@
+default :
+    driver   : pdo_mysql
+    host     : db
+    dbname   : test
+    user     : dev
+    password : mysql
+    charset  : utf8

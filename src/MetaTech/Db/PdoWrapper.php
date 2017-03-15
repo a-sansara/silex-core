@@ -31,6 +31,7 @@ class PdoWrapper
     {
         $this->profile = $profile;
         $this->logger = $logger;
+        $this->switchDb($profile);
     }
 
     /*!

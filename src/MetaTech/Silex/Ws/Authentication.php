@@ -95,13 +95,21 @@ class Authentication
         if ($this->authenticator->isValid($token)) {
             $login    = $request->get('login');
             $password = $request->get('password');
-            if ($done = $this->authenticator->check($token, $login)) {
-                if ($this->checkUser($login, $password, $token->getIdent())) {
-                    $sid  = $this->onSuccess($token, $login);
-                    $msg  = "authentication sucessful ! logged as $login";
-                    $data = compact('sid');
+            if ($this->authenticator->check($token, $login)) {
+                try {
+                    if ($done = $this->checkUser($login, $password, $token->getIdent())) {
+                        $sid  = $this->onSuccess($token, $login);
+                        $msg  = "authentication sucessful ! logged as $login";
+                        $data = compact('sid');
+                    }
+                }
+                catch(\Exception $e) {
+                    $msg = 'invalid user or password';
                 }
             }
+        }
+        if (!$done) {
+            sleep(3);
         }
         return new JsonResponse(compact('done', 'msg', 'data'), $done ? 200 : 401);
     }
@@ -133,23 +141,25 @@ class Authentication
     public function check(Request $request)
     {
         if (!$this->isAllowedRoute($request->getPathInfo())) {
-            $this->sessionInvalidate();
             $done  = false;
             $msg   = "authentication require";
             try {
                 $token = $this->authenticator->getToken();
                 
                 if ($this->authenticator->isValid($token)) {
-                    $sid = $this->authenticator->getSessionId($token);
-                    $this->session->setId($sid);
-                    $this->session->start();
-                    $user = $this->session->get('user');
-                    // done : lets controller takes hand
-                    if (!is_null($user) && $user->key == $token->getIdent()) {
-                        return;
-                    }
-                    else {
+                    if (!empty($sid = $this->authenticator->getSessionId($token))) {
                         $this->sessionInvalidate();
+                        $this->session->setId($sid);
+                        $this->session->start();
+                        $user = $this->session->get('user');
+                        $data = compact('user');
+                        // done : lets controller takes hand
+                        if (!is_null($user) && $user->key == $token->getIdent()) {
+                            return;
+                        }
+                        else {
+                            $this->sessionInvalidate();
+                        }
                     }
                 }
             }
@@ -157,7 +167,7 @@ class Authentication
                 $done = false;
                 $msg  = $e->getMessage();
             }
-            return new JsonResponse(compact('done', 'msg'), 401);
+            return new JsonResponse(compact('done', 'msg', 'data'), 401);
         }
     }
 }

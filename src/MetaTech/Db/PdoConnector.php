@@ -1,5 +1,5 @@
 <?php
-namespace MetaTech\Core\Db;
+namespace MetaTech\Db;
 
 use PDO;
 use MetaTech\Core\Singleton;
