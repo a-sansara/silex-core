@@ -22,13 +22,13 @@ Or add the package to your `composer.json`.
 
 ```
 "require": {
-    "meta-tech/silex-core" : "@dev"
+    "meta-tech/silex-core" : "~1.0"
 }
 ```
 
 ## Usage
 
-see [ meta-tech\pws-server ](https://github.com/meta-tech/pws-server)
+see [ meta-tech/pws-server ](https://github.com/meta-tech/pws-server)
 
 
 ### License
