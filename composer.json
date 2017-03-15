@@ -21,6 +21,5 @@
         "meta-tech/silex-controller-service" : "@dev",
         "silex/silex": "~2.0",
         "gecko-packages/gecko-silex-config-service": "^2.0"
-    },
-    "minimum-stability": "dev"
+    }
 }
