@@ -23,7 +23,7 @@ Or add the package to your `composer.json`.
 
 ```
 "require": {
-    "meta-tech/silex-core" : "~1.0"
+    "meta-tech/silex-core" : "^1.0"
 }
 ```
 

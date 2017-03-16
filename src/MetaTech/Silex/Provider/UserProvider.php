@@ -67,31 +67,13 @@ class UserProvider implements UserProviderInterface
     }
 
     /*!
-     * @method      loadUserPrograms
+     * @method      loadUserByRole
      * @public
      * @return      Symfony\Component\Security\Core\User\User
      */
     private function loadUserByRole($role)
     {
         return $this->pdo->exec('SELECT * FROM ' . $this->table . ' WHERE roles LIKE :role', compact('role'))->fetchAll();
-    }
-
-    /*!
-     * @method      loadProgramKeys
-     * @public
-     * @return      Symfony\Component\Security\Core\User\User
-     */
-    public function loadProgramKeys()
-    {
-        $keys = [];
-        $rows = $this->loadUserPrograms();
-        $rows = array_merge($rows, $this->loadUserPrograms('INSURER'));
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                $keys[] = $row->key;
-            } 
-        }
-        return $keys;
     }
 
     /*!
