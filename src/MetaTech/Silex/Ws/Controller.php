@@ -54,7 +54,11 @@ class Controller extends Base
         if (is_null($data)) {
             unset($data);
         }
-        $response = new JsonResponse(compact('done', 'msg', 'data'), 200);
+        $headers  = [];
+        if (!empty($tokenResponse = $this->session->get('pwsauth.response'))) {
+            $headers['Pws-Response'] = $tokenResponse;
+        }
+        $response = new JsonResponse(compact('done', 'msg', 'data'), 200, $headers);
         return $response;
     }
 

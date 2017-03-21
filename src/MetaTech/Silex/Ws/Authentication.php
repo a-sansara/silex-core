@@ -95,11 +95,13 @@ class Authentication
     public function auth(Request $request)
     {
         $this->sessionInvalidate();
-        $done  = false;
-        $msg   = 'authentication require';
-        $token = $this->authenticator->getToken();
+        $done          = false;
+        $msg           = 'authentication require';
+        $token         = $this->authenticator->getToken();
+        $login         = $request->get('login');
+        $responseToken = $this->authenticator->generateResponseHeader($token, $login);
+        $headers       = $this->getResponseHeaders($responseToken);
         if ($this->authenticator->isValid($token)) {
-            $login    = $request->get('login');
             $password = $request->get('password');
             if ($this->authenticator->check($token, $login)) {
                 try {
@@ -117,7 +119,21 @@ class Authentication
         if (!$done) {
             sleep(3);
         }
-        return new JsonResponse(compact('done', 'msg', 'data'), $done ? 200 : 401);
+        return new JsonResponse(compact('done', 'msg', 'data'), $done ? 200 : 401, $headers);
+    }
+
+    /*!
+     * @method      getResponseHeaders
+     * @private
+     * @param       [assoc]     $headers
+     * @return      [assoc]
+     */
+    private function getResponseHeaders($headers=[], $tokenResponse=null)
+    {
+        if (!empty($tokenResponse) || !empty($tokenResponse = $this->session->get('pwsauth.response'))) {
+            $headers['Pws-Response'] = $tokenResponse;
+        }
+        return $headers
     }
 
     /*!
@@ -134,6 +150,7 @@ class Authentication
         $user->key   = $token->getIdent();
         $user->login = $login;
         $this->session->set('user', $user);
+        $this->session->set('pwsauth.response', $this->authenticator->generateResponseHeader($token, $login));
         $this->session->save();
         return $sid;
     }
@@ -147,8 +164,9 @@ class Authentication
     public function check(Request $request)
     {
         if (!$this->isAllowedRoute($request->getPathInfo())) {
-            $done  = false;
-            $msg   = "authentication require";
+            $done    = false;
+            $msg     = "authentication require";
+            $headers = [];
             try {
                 $token = $this->authenticator->getToken();
                 
@@ -158,9 +176,10 @@ class Authentication
                         $this->session->setId($sid);
                         $this->session->start();
                         $user = $this->session->get('user');
-                        $data = compact('user');
                         // done : lets controller takes hand
                         if (!is_null($user) && $user->key == $token->getIdent()) {
+                            $tokenResponse = $this->authenticator->generateResponseHeader($token, $user->login)
+                            $this->session->set('pwsauth.response', $tokenResponse);
                             return;
                         }
                         else {
@@ -173,7 +192,7 @@ class Authentication
                 $done = false;
                 $msg  = $e->getMessage();
             }
-            return new JsonResponse(compact('done', 'msg', 'data'), 401);
+            return new JsonResponse(compact('done', 'msg', 'data'), 401, $headers);
         }
     }
 }
