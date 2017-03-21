@@ -133,7 +133,7 @@ class Authentication
         if (!empty($tokenResponse) || !empty($tokenResponse = $this->session->get('pwsauth.response'))) {
             $headers['Pws-Response'] = $tokenResponse;
         }
-        return $headers
+        return $headers;
     }
 
     /*!
@@ -178,7 +178,7 @@ class Authentication
                         $user = $this->session->get('user');
                         // done : lets controller takes hand
                         if (!is_null($user) && $user->key == $token->getIdent()) {
-                            $tokenResponse = $this->authenticator->generateResponseHeader($token, $user->login)
+                            $tokenResponse = $this->authenticator->generateResponseHeader($token, $user->login);
                             $this->session->set('pwsauth.response', $tokenResponse);
                             return;
                         }
