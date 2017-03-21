@@ -99,8 +99,8 @@ class Authentication
         $msg           = 'authentication require';
         $token         = $this->authenticator->getToken();
         $login         = $request->get('login');
-        $responseToken = $this->authenticator->generateResponseHeader($token, $login);
-        $headers       = $this->getResponseHeaders($responseToken);
+        $responseToken = $this->authenticator->generateResponseHeader($token);
+        $headers       = $this->getResponseHeaders([], $responseToken);
         if ($this->authenticator->isValid($token)) {
             $password = $request->get('password');
             if ($this->authenticator->check($token, $login)) {
@@ -150,7 +150,6 @@ class Authentication
         $user->key   = $token->getIdent();
         $user->login = $login;
         $this->session->set('user', $user);
-        $this->session->set('pwsauth.response', $this->authenticator->generateResponseHeader($token, $login));
         $this->session->save();
         return $sid;
     }
@@ -168,8 +167,9 @@ class Authentication
             $msg     = "authentication require";
             $headers = [];
             try {
-                $token = $this->authenticator->getToken();
-                
+                $token         = $this->authenticator->getToken();
+                $tokenResponse = $this->authenticator->generateResponseHeader($token);
+                $headers       = $this->getResponseHeaders($headers, $tokenResponse);
                 if ($this->authenticator->isValid($token)) {
                     if (!empty($sid = $this->authenticator->getSessionId($token))) {
                         $this->sessionInvalidate();
@@ -178,7 +178,6 @@ class Authentication
                         $user = $this->session->get('user');
                         // done : lets controller takes hand
                         if (!is_null($user) && $user->key == $token->getIdent()) {
-                            $tokenResponse = $this->authenticator->generateResponseHeader($token, $user->login);
                             $this->session->set('pwsauth.response', $tokenResponse);
                             return;
                         }

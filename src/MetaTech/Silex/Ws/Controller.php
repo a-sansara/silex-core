@@ -49,13 +49,13 @@ class Controller extends Base
      * @param       []      $data
      * @return      Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function response($done = false, $msg = "fail", $data = null)
+    public function response($done = false, $msg = "fail", $data = null, $tokenResponse = null)
     {
         if (is_null($data)) {
             unset($data);
         }
         $headers  = [];
-        if (!empty($tokenResponse = $this->session->get('pwsauth.response'))) {
+        if (!empty($tokenResponse) || !empty($tokenResponse = $this->session->get('pwsauth.response'))) {
             $headers['Pws-Response'] = $tokenResponse;
         }
         $response = new JsonResponse(compact('done', 'msg', 'data'), 200, $headers);
@@ -107,11 +107,12 @@ class Controller extends Base
      */
     public function logout()
     {
+        $tokenResponse = $this->session->isStarted() ? $this->session->get('pwsauth.response') : null;
         $this->handler->sessionInvalidate();
         $sessid = $this->session->getId();
         $done   = true;
         $msg    = 'session logout';
-        return $this->response($done, $msg);
+        return $this->response($done, $msg, null, $tokenResponse);
     }
 
     /*!
