@@ -52,6 +52,17 @@ abstract class Base implements ControllerProviderInterface
     }
 
     /*!
+     * @method      routing
+     * @public
+     * @param       Silex\ControllerCollection  $collection
+     * @return      Silex\ControllerCollection
+     */
+    public function routing(ControllerCollection $collection) : ControllerCollection
+    {
+        return $collection;
+    }
+
+    /*!
      * @method      connect
      * @public
      * @param       Silex\Application   $app
