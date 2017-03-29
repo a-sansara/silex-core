@@ -18,7 +18,7 @@
     },
     "require": {
         "php" : "^7.0",
-        "meta-tech/pws-auth" : "^2.1",
+        "meta-tech/pws-auth" : "@dev",
         "meta-tech/silex-controller-service" : "^1.0",
         "silex/silex": "^2.0",
         "gecko-packages/gecko-silex-config-service": "^2.0",
